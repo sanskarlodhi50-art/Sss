@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSS Bamori | Master Cloud</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        :root { --p: #0f172a; --s: #3b82f6; --a: #f59e0b; --g: #10b981; --d: #ef4444; }
+        body { background: #f1f5f9; color: #1e293b; height: 100vh; overflow: hidden; }
+
+        /* HEADER & LOGO */
+        .header { background: var(--p); color: white; padding: 25px 20px; text-align: center; border-bottom: 5px solid var(--a); border-radius: 0 0 30px 30px; }
+        .logo-box { width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; margin: 0 auto 10px; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* MAIN UI */
+        .container { flex: 1; height: calc(100vh - 220px); overflow-y: auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: white; padding: 20px; border-radius: 20px; text-align: center; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; cursor: pointer; transition: 0.2s; }
+        .card:active { transform: scale(0.95); }
+        .section-title { font-size: 14px; font-weight: 800; color: var(--p); margin: 20px 0 10px; text-transform: uppercase; border-left: 4px solid var(--a); padding-left: 10px; }
+
+        /* PAGES */
+        .page { display: none; position: fixed; inset: 0; background: #f8fafc; z-index: 1000; flex-direction: column; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .nav { background: var(--p); color: white; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; }
+
+        /* CHAT BOX */
+        .chat-view { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 10px 14px; border-radius: 15px; font-size: 14px; max-width: 80%; line-height: 1.4; }
+        .Admin { align-self: flex-end; background: var(--p); color: white; border-bottom-right-radius: 2px; }
+        .Student { align-self: flex-start; background: white; border: 1px solid #ddd; border-bottom-left-radius: 2px; }
+
+        /* ADMIN PANEL */
+        .master-panel { display: none; position: fixed; inset: 0; background: #fff; z-index: 2000; overflow-y: auto; padding: 20px; }
+        .adm-card { background: #f1f5f9; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .inp { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; outline: none; }
+        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 800; color: white; cursor: pointer; }
+
+        .fab { position: fixed; bottom: 25px; right: 20px; background: var(--a); width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 20px; color: white; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div id="home">
+        <div class="header">
+            <div class="logo-box"><img id="main-logo" src="https://via.placeholder.com/150?text=LOGO"></div>
+            <h2 id="school-name-display">Shiv Shiksha Sadan</h2>
+            <p style="font-size: 10px; color: var(--a); font-weight: 600;">BAMORI - BANDAKPUR</p>
+        </div>
+        
+        <div class="container">
+            <div class="section-title">Main Menu</div>
+            <div class="grid">
+                <div class="card" onclick="openPage('class-p')">📚<br>CLASSES</div>
+                <div class="card" onclick="openPage('video-p')">🎬<br>VIDEOS</div>
+                <div class="card" onclick="openPage('res-p')">🏆<br>RESULT</div>
+                <div class="card" onclick="openPage('comp-p')">📮<br>SHIKAYAT</div>
+            </div>
+            
+            <div class="section-title">Updates</div>
+            <div class="card" style="width:100%; background: var(--p); color:white;">
+                🔔 Latest: School reopens on July 1st!
+            </div>
+        </div>
+    </div>
+
+    <div id="master-adm" class="master-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>🛡️ Admin Panel</h2>
+            <button onclick="document.getElementById('master-adm').style.display='none'" style="background:none; border:none; font-size:24px;">✕</button>
+        </div>
+
+        <div class="adm-card" style="border: 2px solid var(--a);">
+            <h4 style="color:var(--a);">🎨 SCHOOL BRANDING (LOGO)</h4>
+            <p style="font-size:11px; margin-bottom:10px;">यहाँ से फोटो बदलें, यह सबके फोन पर बदल जाएगी।</p>
+            <input type="file" id="logo-upload" accept="image/*" class="inp" onchange="uploadLogoToCloud(this)">
+            <button class="btn" style="background:var(--p);">LOGO UPDATE (Auto)</button>
+        </div>
+
+        <div class="adm-card">
+            <h4>💬 BROADCAST MESSAGE</h4>
+            <select id="adm-msg-cls" class="inp"></select>
+            <textarea id="adm-msg-text" class="inp" placeholder="Type message..."></textarea>
+            <button class="btn" style="background:var(--s);" onclick="sendAdminMsg()">SEND TO CLASS</button>
+        </div>
+
+        <div class="adm-card">
+            <h4>🏆 UPLOAD RESULT</h4>
+            <select id="adm-res-cls" class="inp"></select>
+            <textarea id="adm-res-data" class="inp" placeholder="Result Details..."></textarea>
+            <button class="btn" style="background:var(--g);" onclick="uploadResult()">SAVE RESULT</button>
+        </div>
+
+        <button class="btn" style="background:var(--d); margin-top:20px;" onclick="location.reload()">LOGOUT & REFRESH</button>
+    </div>
+
+    <div id="class-p" class="page">
+        <div class="nav"><span onclick="closePage('class-p')">← Back</span><span>Classes</span><span></span></div>
+        <div class="container grid" id="cls-list-ui"></div>
+    </div>
+
+    <div id="chat-page" class="page">
+        <div class="nav"><span onclick="closePage('chat-page')">← Exit</span><span id="active-title">Chat</span><span></span></div>
+        <div class="chat-view" id="chat-flow"></div>
+        <div style="padding:15px; background:white; display:flex; gap:10px; border-top:1px solid #eee;">
+            <input id="stu-msg" class="inp" style="margin:0;" placeholder="Write here...">
+            <button class="btn" style="width:auto; background:var(--s); padding:0 20px;" onclick="sendStudentMsg()">➤</button>
+        </div>
+    </div>
+
+    <div id="video-p" class="page"><div class="nav"><span onclick="closePage('video-p')">← Back</span><span>School Videos</span><span></span></div><div class="container" id="video-ui"></div></div>
+    <div id="res-p" class="page"><div class="nav"><span onclick="closePage('res-p')">← Back</span><span>Results</span><span></span></div><div class="container" id="res-ui"></div></div>
+    <div id="comp-p" class="page"><div class="nav"><span onclick="closePage('comp-p')">← Back</span><span>Shikayat</span><span></span></div><div class="container"><input id="c-name" class="inp" placeholder="Your Name"><textarea id="c-text" class="inp" placeholder="Details..."></textarea><button class="btn" style="background:var(--d);" onclick="submitComp()">SUBMIT</button></div></div>
+
+    <button class="fab" onclick="checkAdmin()">⚙️</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDr3rt1Q0ZGQXOaT8aH73wGydLUra-BkOg",
+            authDomain: "sss-bamhori.firebaseapp.com",
+            projectId: "sss-bamhori",
+            databaseURL: "https://sss-bamhori-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.classes = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"];
+        window.curCls = "";
+
+        // Initial Load
+        window.onload = () => {
+            // Setup Dropdowns
+            window.classes.forEach(c => {
+                document.getElementById('cls-list-ui').innerHTML += `<div class="card" onclick="openChat('${c}')">📚<br>${c}</div>`;
+                document.getElementById('adm-msg-cls').innerHTML += `<option value="${c}">${c}</option>`;
+                document.getElementById('adm-res-cls').innerHTML += `<option value="${c}">${c}</option>`;
+            });
+
+            // Cloud Logo Sync (यह सबके फोन पर लोगो दिखाएगा)
+            onValue(ref(db, 'settings/logo'), (snap) => {
+                if(snap.exists()) document.getElementById('main-logo').src = snap.val();
+            });
+        };
+
+        window.openPage = (id) => document.getElementById(id).style.display = 'flex';
+        window.closePage = (id) => document.getElementById(id).style.display = 'none';
+
+        window.checkAdmin = () => {
+            let pin = prompt("Admin PIN Dalein:");
+            if(pin === "1234") openPage('master-adm');
+            else alert("Galat PIN!");
+        };
+
+        // Cloud Logo Upload
+        window.uploadLogoToCloud = (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64Logo = e.target.result;
+                    set(ref(db, 'settings/logo'), base64Logo);
+                    alert("Logo Updated for Everyone!");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        // Chat System
+        window.openChat = (c) => {
+            window.curCls = c;
+            document.getElementById('active-title').innerText = "Class " + c;
+            openPage('chat-page');
+            onValue(ref(db, 'chats/' + c), (snap) => {
+                let html = "";
+                snap.forEach(child => {
+                    let m = child.val();
+                    html += `<div class="bubble ${m.role}">${m.text}</div>`;
+                });
+                const flow = document.getElementById('chat-flow');
+                flow.innerHTML = html;
+                flow.scrollTop = flow.scrollHeight;
+            });
+        };
+
+        window.sendStudentMsg = () => {
+            let t = document.getElementById('stu-msg').value; if(!t) return;
+            push(ref(db, 'chats/' + window.curCls), { role: 'Student', text: t });
+            document.getElementById('stu-msg').value = "";
+        };
+
+        window.sendAdminMsg = () => {
+            let c = document.getElementById('adm-msg-cls').value;
+            let t = document.getElementById('adm-msg-text').value; if(!t) return;
+            push(ref(db, 'chats/' + c), { role: 'Admin', text: t });
+            alert("Sent!");
+            document.getElementById('adm-msg-text').value = "";
+        };
+
+        window.uploadResult = () => {
+            let c = document.getElementById('adm-res-cls').value;
+            let d = document.getElementById('adm-res-data').value;
+            set(ref(db, 'results/' + c), d);
+            alert("Result Saved!");
+        };
+
+        window.submitComp = () => {
+            let n = document.getElementById('c-name').value;
+            let t = document.getElementById('c-text').value;
+            push(ref(db, 'complaints'), { name: n, msg: t });
+            alert("Submitted!");
+            closePage('comp-p');
+        };
+
+    </script>
+</body>
+</html>
+
