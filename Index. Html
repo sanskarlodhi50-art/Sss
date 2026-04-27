@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSS Bamori | Complete Master Update</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        :root { --p: #0f172a; --s: #3b82f6; --a: #f59e0b; --g: #10b981; --d: #ef4444; }
+        body { background: #f1f5f9; color: #1e293b; height: 100vh; overflow: hidden; }
+
+        /* HEADER & LOGO */
+        .header { background: var(--p); color: white; padding: 25px 20px; text-align: center; border-bottom: 5px solid var(--a); border-radius: 0 0 30px 30px; position: relative; }
+        .logo-box { width: 70px; height: 70px; border-radius: 50%; border: 3px solid white; margin: 0 auto 10px; background: white; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* CONTAINER & GRID */
+        .container { flex: 1; height: calc(100vh - 220px); overflow-y: auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { background: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #eee; transition: 0.2s; font-size: 13px; }
+        .card:active { transform: scale(0.95); }
+        .section-title { font-size: 15px; font-weight: 800; color: var(--p); margin: 15px 0 10px; text-transform: uppercase; border-left: 4px solid var(--a); padding-left: 10px; }
+
+        /* PAGES */
+        .page { display: none; position: fixed; inset: 0; background: #f8fafc; z-index: 1000; flex-direction: column; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .nav { background: var(--p); color: white; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; }
+
+        /* CHAT UI */
+        .chat-view { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .chat-row { display: flex; align-items: flex-end; gap: 5px; max-width: 85%; }
+        .Admin-row { align-self: flex-end; flex-direction: row-reverse; }
+        .Student-row { align-self: flex-start; }
+        .bubble { padding: 10px 14px; border-radius: 15px; font-size: 14px; word-wrap: break-word; }
+        .bubble img { width: 100%; border-radius: 10px; margin-bottom: 5px; display: block; cursor: zoom-in; }
+        .Admin { background: var(--p); color: white; }
+        .Student { background: white; border: 1px solid #ddd; }
+        .chat-del { font-size: 20px; color: var(--d); cursor: pointer; padding: 0 5px; opacity: 0.6; }
+
+        /* CONTROLS */
+        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 14px; font-weight: 600; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; color: white; cursor: pointer; text-transform: uppercase; }
+        .fab { position: fixed; bottom: 25px; right: 20px; background: var(--a); width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; z-index: 1500; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        /* MASTER ADMIN PANEL */
+        .master-panel { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; overflow-y: auto; padding: 30px 20px; color: white; }
+        .adm-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .log-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #000; font-size: 13px; }
+        .del-mini { background: var(--d); color: white; border: none; padding: 5px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; }
+        
+        #img-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; }
+        #img-modal img { max-width: 90%; max-height: 80%; border-radius: 10px; }
+        
+        .special-badge { text-align: center; color: var(--a); font-weight: 800; font-size: 16px; padding: 15px; text-transform: uppercase; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <div id="home">
+        <div class="header">
+            <div class="logo-box"><img id="main-logo" src="https://via.placeholder.com/150/ffffff/000000?text=LOGO"></div>
+            <h3>Shiv Shiksha Sadan</h3>
+            <p style="font-size: 10px; color: var(--a);">BAMORI - BANDAKPUR</p>
+        </div>
+        <div class="container">
+            <div class="section-title">मुख्य सुविधाएँ</div>
+            <div class="grid">
+                <div class="card" onclick="openPage('class-p')">📚<br>CLASSES</div>
+                <div class="card" onclick="openPage('staff-punch-p')">👔<br>HAZRI</div>
+                <div class="card" onclick="openPage('comp-p')">📮<br>SHIKAYAT</div>
+                <div class="card" onclick="openPage('res-p')">🏆<br>RESULTS</div>
+                <div class="card" onclick="openPage('video-p')" style="grid-column: span 2; background: var(--p); color: white;">🎬<br>SCHOOL VIDEOS</div>
+            </div>
+
+            <div class="special-badge">—— Coming Soon ——</div>
+
+            <div class="grid" style="margin-top: 10px;">
+                <div class="card" onclick="alert('Online Classes जल्द शुरू होंगी!')" style="border: 2px solid var(--s);">🎥<br>ONLINE CLASSES</div>
+                <div class="card" onclick="alert('Library सेक्शन अपडेट हो रहा है!')" style="border: 2px solid var(--g);">📖<br>E-LIBRARY</div>
+                <div class="card" onclick="alert('Time Table जल्द अपलोड होगा')" style="grid-column: span 2; border: 2px solid var(--a);">📅<br>EXAM TIME TABLE</div>
+            </div>
+            
+            <p style="text-align: center; font-size: 11px; color: #94a3b8; margin: 30px 0;">© 2026 SSS Bamori Portal</p>
+        </div>
+    </div>
+
+    <div id="img-modal" onclick="this.style.display='none'"><img id="modal-img-src"></div>
+
+    <div id="video-p" class="page">
+        <div class="nav"><span onclick="closePage('video-p')">← BACK</span><span>SCHOOL VIDEOS</span><span></span></div>
+        <div class="container" id="video-list-ui"></div>
+    </div>
+
+    <div id="class-p" class="page">
+        <div class="nav"><span onclick="closePage('class-p')">← BACK</span><span>CLASSES</span><span></span></div>
+        <div class="container grid" id="cls-grid-ui"></div>
+        <div id="chat-box" style="display:none; flex-direction:column; height:100%; position:absolute; inset:0; background:white; z-index:1100;">
+            <div class="nav"><span onclick="document.getElementById('chat-box').style.display='none'">← EXIT</span><span id="active-cls-name">Chat</span><span></span></div>
+            <div class="chat-view" id="chat-flow"></div>
+            <div id="chat-input-area" style="padding:15px; display:flex; gap:10px; border-top:1px solid #eee;">
+                <input id="stu-msg" class="inp" style="margin:0;" placeholder="लिखें...">
+                <button class="btn" style="width:auto; background:var(--s); padding:0 20px;" onclick="sendMessage()">➤</button>
+            </div>
+            <div id="chat-locked-msg" style="display:none; padding:15px; text-align:center; color:red; font-weight:bold;">🔒 CHAT IS LOCKED</div>
+        </div>
+    </div>
+
+    <div id="res-p" class="page">
+        <div class="nav"><span onclick="closePage('res-p')">← BACK</span><span>RESULTS</span><span></span></div>
+        <div class="container">
+            <select id="res-class-sel" class="inp" onchange="showResult(this.value)"><option value="">Class चुनें</option></select>
+            <div id="res-area" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <div id="comp-p" class="page"><div class="nav"><span onclick="closePage('comp-p')">← BACK</span><span>SHIKAYAT</span><span></span></div><div class="container"><select id="c-cls" class="inp"></select><input id="c-name" class="inp" placeholder="आपका नाम"><textarea id="c-msg" class="inp" rows="3" placeholder="शिकायत का विवरण..."></textarea><button class="btn" style="background:var(--d);" onclick="sendComp()">भेजें (SUBMIT)</button></div></div>
+    
+    <div id="staff-punch-p" class="page">
+        <div class="nav"><span onclick="closePage('staff-punch-p')">← BACK</span><span>STAFF HAZRI</span><span></span></div>
+        <div class="container"><select id="t-name-list" class="inp"></select><button class="btn" style="background:var(--g);" onclick="punch()">PUNCH ATTENDANCE</button></div>
+    </div>
+
+    <div id="master-adm" class="master-panel">
+        <h2 style="text-align:center; color:var(--a); margin-bottom:20px;">🛡️ MASTER CONTROL</h2>
+        
+        <div class="adm-section">
+            <h4 style="color:var(--a);">🔑 SECURITY</h4>
+            <input id="new-pin" class="inp" placeholder="Naya PIN Dalein">
+            <button class="btn" style="background:var(--a);" onclick="changePin()">UPDATE PIN</button>
+        </div>
+
+        <div class="adm-section">
+            <h4 style="color:var(--d);">🗑️ DELETE CONTROL</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button class="btn" style="background:var(--d); font-size:10px; padding:10px;" onclick="viewLogs('att')">DEL HAZRI</button>
+                <button class="btn" style="background:var(--d); font-size:10px; padding:10px;" onclick="viewLogs('vid')">DEL VIDEOS</button>
+                <button class="btn" style="background:var(--d); font-size:10px; padding:10px;" onclick="viewLogs('staff')">DEL TEACHERS</button>
+                <button class="btn" style="background:var(--d); font-size:10px; padding:10px;" onclick="viewLogs('all_res')">DEL RESULTS</button>
+            </div>
+        </div>
+
+        <div class="adm-section">
+            <h4 style="color:var(--g);">🎬 CONTENT & STAFF</h4>
+            <input id="v-url" class="inp" placeholder="YouTube Link">
+            <button class="btn" style="background:var(--g); margin-bottom:10px;" onclick="addVideo()">ADD VIDEO</button>
+            <input id="adm-t-new" class="inp" placeholder="Teacher Ka Naam">
+            <button class="btn" style="background:var(--s);" onclick="addTeacher()">ADD TEACHER</button>
+        </div>
+
+        <div class="adm-section">
+            <h4 style="color:var(--s);">💬 ADMIN MESSAGE & LOGO</h4>
+            <select id="adm-c-cls" class="inp"></select>
+            <input type="file" id="adm-c-img" accept="image/*" class="inp">
+            <textarea id="adm-c-msg" class="inp" placeholder="Message..."></textarea>
+            <button class="btn" style="background:var(--s); margin-bottom:10px;" onclick="adminChat()">SEND TO CLASS</button>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="btn" style="background:var(--d); flex:1;" onclick="setLock(true)">🔒 LOCK CHAT</button>
+                <button class="btn" style="background:var(--g); flex:1;" onclick="setLock(false)">🔓 UNLOCK</button>
+            </div>
+            <button class="btn" style="background:var(--p);" onclick="document.getElementById('l-inp').click()">CHANGE SCHOOL LOGO</button>
+            <input type="file" id="l-inp" style="display:none;" onchange="updateLogo(this)">
+        </div>
+
+        <div class="adm-section">
+            <h4 style="color:var(--a);">🏆 RESULT MANAGER</h4>
+            <select id="adm-res-cls" class="inp"></select>
+            <textarea id="adm-res-txt" class="inp" rows="3" placeholder="Result likhein..."></textarea>
+            <button class="btn" style="background:var(--a);" onclick="saveRes()">UPLOAD RESULT</button>
+        </div>
+
+        <div class="adm-section">
+            <h4 style="color:white;">📮 SHIKAYAT MANAGER</h4>
+            <button class="btn" style="background:var(--p);" onclick="openCompAdmin()">VIEW / DEL SHIKAYAT</button>
+        </div>
+
+        <button class="btn" style="background:var(--d); margin:20px 0 50px;" onclick="document.getElementById('master-adm').style.display='none'">CLOSE PANEL</button>
+    </div>
+
+    <div id="log-view-p" class="page"><div class="nav"><span onclick="closePage('log-view-p')">← BACK</span><span id="log-title">RECORDS</span><span></span></div><div class="container" id="log-list"></div></div>
+    <div id="comp-admin-list-p" class="page"><div class="nav"><span onclick="closePage('comp-admin-list-p')">← BACK</span><span>COMPLAINTS</span><span></span></div><div class="container grid" id="comp-cls-grid"></div></div>
+    <div id="view-class-comp-p" class="page"><div class="nav"><span onclick="closePage('view-class-comp-p')">← BACK</span><span id="target-comp-cls">Class</span><span></span></div><div class="container" id="final-comp-list"></div></div>
+
+    <button class="fab" onclick="access()">⚙️</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDr3rt1Q0ZGQXOaT8aH73wGydLUra-BkOg",
+            authDomain: "sss-bamhori.firebaseapp.com",
+            projectId: "sss-bamhori",
+            storageBucket: "sss-bamhori.firebasestorage.app",
+            messagingSenderId: "150489022146",
+            appId: "1:150489022146:web:8dfc0fee505cd1399a855b",
+            databaseURL: "https://sss-bamhori-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.classes = ["LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"];
+        window.curCls = "";
+
+        window.onload = () => {
+            const logo = localStorage.getItem('school_logo');
+            if(logo) document.getElementById('main-logo').src = logo;
+            
+            window.classes.forEach(c => {
+                document.getElementById('cls-grid-ui').innerHTML += `<div class="card" onclick="openChat('${c}')">📚<br>${c}</div>`;
+                document.getElementById('comp-cls-grid').innerHTML += `<div class="card" onclick="viewClassComp('${c}')">📮<br>${c}</div>`;
+                document.getElementById('res-class-sel').innerHTML += `<option value="${c}">${c}</option>`;
+                document.getElementById('adm-res-cls').innerHTML += `<option value="${c}">${c}</option>`;
+                document.getElementById('adm-c-cls').innerHTML += `<option value="${c}">${c}</option>`;
+                document.getElementById('c-cls').innerHTML += `<option value="${c}">${c}</option>`;
+            });
+            window.refreshVideos(); 
+            window.updateTeacherDropdowns();
+        };
+
+        // Navigation
+        window.openPage = (id) => document.getElementById(id).style.display = 'flex';
+        window.closePage = (id) => document.getElementById(id).style.display = 'none';
+
+        // Security
+        window.access = () => {
+            let savedPin = localStorage.getItem('admin_pin') || "1234";
+            if(prompt("Enter Admin PIN:") === savedPin) document.getElementById('master-adm').style.display = 'block';
+            else alert("Wrong PIN!");
+        };
+        window.changePin = () => {
+            let p = document.getElementById('new-pin').value;
+            if(!p) return alert("PIN likhein!");
+            localStorage.setItem('admin_pin', p); alert("PIN Updated!");
+            document.getElementById('new-pin').value = "";
+        };
+
+        // Staff & Videos (Firebase Live)
+        window.addTeacher = () => {
+            let n = document.getElementById('adm-t-new').value; if(!n) return;
+            push(ref(database, 'school_staff'), n);
+            alert("Teacher Added Live!"); document.getElementById('adm-t-new').value = "";
+        };
+        window.updateTeacherDropdowns = () => {
+            onValue(ref(database, 'school_staff'), snap => {
+                let html = `<option value="Principal Sir">Principal Sir</option>`;
+                snap.forEach(child => { html += `<option value="${child.val()}">${child.val()}</option>`; });
+                document.getElementById('t-name-list').innerHTML = html;
+            });
+        };
+        window.addVideo = () => {
+            let url = document.getElementById('v-url').value; if(!url) return;
+            let vId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("youtu.be/")[1];
+            push(ref(database, 'school_videos'), { src: "https://www.youtube.com/embed/" + vId });
+            alert("Video Added Live!"); document.getElementById('v-url').value = "";
+        };
+        window.refreshVideos = () => {
+            onValue(ref(database, 'school_videos'), snap => {
+                let html = "";
+                snap.forEach(child => {
+                    let v = child.val();
+                    html = `<div style="margin-bottom:15px; border-radius:15px; overflow:hidden; background:white;"><iframe width="100%" height="200" src="${v.src}" frameborder="0" allowfullscreen></iframe></div>` + html;
+                });
+                document.getElementById('video-list-ui').innerHTML = html;
+            });
+        };
+
+        // Attendance (Firebase Live)
+        window.punch = () => {
+            push(ref(database, 'att_db'), { name: document.getElementById('t-name-list').value, date: new Date().toLocaleString() });
+            alert("Attendance Saved to Server!");
+        };
+
+        // Results (Firebase Live)
+        window.saveRes = () => {
+            set(ref(database, 'res_' + document.getElementById('adm-res-cls').value), document.getElementById('adm-res-txt').value);
+            alert("Result Uploaded Live!");
+            document.getElementById('adm-res-txt').value = "";
+        };
+        window.showResult = (cls) => {
+            if(!cls) return;
+            onValue(ref(database, 'res_' + cls), snap => {
+                let r = snap.val();
+                document.getElementById('res-area').innerHTML = r ? `<div class="card" style="text-align:left;">${r}</div>` : "No result for this class.";
+            });
+        };
+
+        // Complaints (Firebase Live)
+        window.sendComp = () => {
+            let cls = document.getElementById('c-cls').value;
+            push(ref(database, 'comp_' + cls), { name: document.getElementById('c-name').value, msg: document.getElementById('c-msg').value });
+            alert("शिकायत सफलतापूर्वक Server पर भेज दी गई!");
+            window.closePage('comp-p');
+            document.getElementById('c-name').value = ""; document.getElementById('c-msg').value = "";
+        };
+        window.openCompAdmin = () => { document.getElementById('master-adm').style.display = 'none'; window.openPage('comp-admin-list-p'); };
+        window.viewClassComp = (cls) => {
+            window.curCls = cls; window.openPage('view-class-comp-p');
+            document.getElementById('target-comp-cls').innerText = cls + " Complaints";
+            onValue(ref(database, 'comp_' + cls), snap => {
+                let html = "";
+                snap.forEach(child => {
+                    let x = child.val();
+                    html += `<div class="log-item"><span>${x.name}: ${x.msg}</span><button class="del-mini" onclick="delGen('comp_${cls}', '${child.key}')">DEL</button></div>`;
+                });
+                document.getElementById('final-comp-list').innerHTML = html;
+            });
+        };
+
+        // CHAT SYSTEM (Firebase Live - WhatsApp Style)
+        window.openChat = (c) => {
+            window.curCls = c; window.openPage('chat-box'); document.getElementById('active-cls-name').innerText = c;
+            
+            // Live Chat Update
+            onValue(ref(database, 'chat_' + c), snap => {
+                let html = "";
+                snap.forEach(child => {
+                    let x = child.val();
+                    html += `<div class="chat-row ${x.sender}-row"><div class="bubble ${x.sender}">${x.img ? `<img src="${x.img}" onclick="zoom('${x.img}')">` : ""}<b>${x.sender}:</b> ${x.text || ""}</div><span class="chat-del" onclick="delGen('chat_${c}', '${child.key}')">×</span></div>`;
+                });
+                const flow = document.getElementById('chat-flow');
+                flow.innerHTML = html;
+                flow.scrollTop = 9999; // Auto scroll to bottom
+            });
+
+            // Live Lock Status
+            onValue(ref(database, 'lock_' + c), snap => {
+                let isLocked = snap.val() === true;
+                document.getElementById('chat-input-area').style.display = isLocked ? 'none' : 'flex';
+                document.getElementById('chat-locked-msg').style.display = isLocked ? 'block' : 'none';
+            });
+        };
+        window.sendMessage = () => {
+            let m = document.getElementById('stu-msg').value; if(!m) return;
+            push(ref(database, 'chat_' + window.curCls), { sender: 'Student', text: m });
+            document.getElementById('stu-msg').value = "";
+        };
+        window.adminChat = () => {
+            let cls = document.getElementById('adm-c-cls').value;
+            let msg = document.getElementById('adm-c-msg').value;
+            let file = document.getElementById('adm-c-img').files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => { push(ref(database, 'chat_' + cls), { sender: 'Admin', text: msg, img: e.target.result }); alert("Image Sent Live!"); };
+                reader.readAsDataURL(file);
+            } else {
+                push(ref(database, 'chat_' + cls), { sender: 'Admin', text: msg }); alert("Message Sent Live!");
+            }
+            document.getElementById('adm-c-msg').value = ""; document.getElementById('adm-c-img').value = "";
+        };
+        window.setLock = (s) => { set(ref(database, 'lock_' + document.getElementById('adm-c-cls').value), s); alert("Chat Lock Updated Live!"); };
+
+        // Deletion & Utility
+        window.viewLogs = (type) => {
+            document.getElementById('master-adm').style.display = 'none'; window.openPage('log-view-p');
+            let list = document.getElementById('log-list'); list.innerHTML = "Loading...";
+            
+            if(type === 'att') {
+                onValue(ref(database, 'att_db'), snap => {
+                    let html = ""; snap.forEach(child => { let x = child.val(); html = `<div class="log-item"><span>${x.name} (${x.date})</span><button class="del-mini" onclick="delGen('att_db','${child.key}')">DEL</button></div>` + html; });
+                    list.innerHTML = html;
+                });
+            } else if(type === 'vid') {
+                onValue(ref(database, 'school_videos'), snap => {
+                    let html = ""; snap.forEach(child => { html += `<div class="log-item"><span>Video Link</span><button class="del-mini" onclick="delGen('school_videos','${child.key}')">DEL</button></div>`; });
+                    list.innerHTML = html;
+                });
+            } else if(type === 'staff') {
+                onValue(ref(database, 'school_staff'), snap => {
+                    let html = ""; snap.forEach(child => { html += `<div class="log-item"><span>${child.val()}</span><button class="del-mini" onclick="delGen('school_staff','${child.key}')">DEL</button></div>`; });
+                    list.innerHTML = html;
+                });
+            } else if(type === 'all_res') {
+                let html = ""; list.innerHTML = "Class Results check karein...";
+                window.classes.forEach(c => {
+                    onValue(ref(database, 'res_'+c), snap => {
+                        if(snap.exists()) { html += `<div class="log-item"><span>Class ${c} Result</span><button class="del-mini" onclick="delGen('res_${c}','')">DEL</button></div>`; list.innerHTML = html; }
+                    });
+                });
+            }
+        };
+        window.delGen = (path, key) => { remove(ref(database, key ? path + '/' + key : path)); };
+        
+        // Logo & Zoom
+        window.updateLogo = (input) => { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { localStorage.setItem('school_logo', e.target.result); document.getElementById('main-logo').src = e.target.result; }; reader.readAsDataURL(input.files[0]); } };
+        window.zoom = (s) => { document.getElementById('modal-img-src').src = s; document.getElementById('img-modal').style.display = 'flex'; };
+
+    </script>
+</body>
+</html>
